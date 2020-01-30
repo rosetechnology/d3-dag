@@ -77,7 +77,32 @@ export default function() {
       layer.forEach((n) => (n.y = height / 2));
     } else {
       const dh = nodeSize ? height : height / (layers.length - 1);
-      layers.forEach((layer, i) => layer.forEach((n) => (n.y = dh * i)));
+
+      //chris code added in
+      maxNodeHeightsPerLayer = [];
+      variableNodeHeightsQ = true;
+      for ((layer, i) of layers) {
+        max = -1;
+        for (n in layer) {
+          if (n.nodeHeight == undefined) {
+            variableNodeHeightsQ = false;
+            break;
+          }
+          if (n.nodeHeight > max) {
+            max = n.nodeHeight;
+          }
+        }
+        if (!variableNodeHeightsQ) {
+          break;
+        }
+        maxNodeHeightsPerLayer[i] = max;
+      }
+      yValuesPerLayer = [0];
+      for (i = 1; i < maxNodeHeightsPerLayer.length; i++) {
+        yValuesPerLayer[i] = maxNodeHeightsPerLayer[i-1] + maxNodeHeightsPerLayer[i] + yValuesPerLayer[i-1];
+      }
+
+      layers.forEach((layer, i) => layer.forEach((n) => (n.y = (variableNodeHeightsQ ? yValuesPerLayer[i] : dh * i))));
     }
     if (layers.every((l) => l.length === 1)) {
       // Next steps aren't necessary

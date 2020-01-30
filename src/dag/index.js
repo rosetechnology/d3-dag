@@ -19,11 +19,12 @@ import size from "./size";
 import some from "./some";
 import sum from "./sum";
 
-export default function Node(id, data) {
+export default function Node(id, data, nodeHeight) {
   this.id = id;
   this.data = data;
   this.children = [];
   this._childLinkData = [];
+  this.nodeHeight = nodeHeight;
 }
 
 // Must be internal for new Node creation
